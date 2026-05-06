@@ -90,7 +90,7 @@ DELETE /notifications/{id}
 ### Headers
 Content-Type: application/json
 
-### Response
+### Res
 
 ```json
 {
