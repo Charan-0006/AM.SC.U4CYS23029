@@ -1,4 +1,4 @@
-# Stage 1
+# Stage 1 fullstack role
 
 ## Core Notification Actions
 
@@ -10,7 +10,7 @@
 
 ---
 
-## 1. Send Notification
+## 1. Send Notfication
 
 ### Endpoint
 POST /notifications
@@ -257,4 +257,149 @@ ORDER BY createdAt DESC;
 ```
 
 ---
+
+
+## Recommended Index
+
+```sql
+CREATE INDEX idx_student_read_created
+ON notifications(studentID, isRead, createdAt);
+```
+
+---
+
+## Computational Cost
+
+Without indexes:
+- Time Complexity ≈ O(n)
+
+With indexes:
+- Faster searching and sorting
+- Reduced query execution time
+
+---
+
+## Is Adding Indexes on Every Column Effective?
+
+No.
+
+Reasons:
+- Increased storage usage
+- Slower insert/update operations
+- Unnecessary indexes reduce performance
+
+Indexes should only be created on:
+- Frequently searched columns
+- Filtering columns
+- Sorting columns
+
+---
+
+## Query for Placement Notifications in Last 7 Days
+
+```sql
+SELECT DISTINCT studentID
+FROM notifications
+WHERE notificationType = 'Placement'
+AND createdAt >= NOW() - INTERVAL 7 DAY;
+```
+
+
+# Stage 4
+
+## Problem Analysis
+
+Notifications are fetched on every page load for every student.
+
+Problems:
+- High database load
+- Increased response time
+- Poor user experience
+- Server overload
+
+---
+
+## Suggested Solutions
+
+### 1. Caching
+
+Store frequently accessed notifications in cache.
+
+Tools:
+- Redis
+- Memory cache
+
+Benefits:
+- Faster response
+- Reduced DB queries
+
+Tradeoff:
+- Extra memory usage
+
+---
+
+### 2. Pagination
+
+Fetch limited notifications per request.
+
+Example:
+- 10 notifications per page
+
+Benefits:
+- Smaller response size
+- Faster loading
+
+Tradeoff:
+- Multiple API calls needed
+
+---
+
+### 3. Real-Time Notifications
+
+Use WebSockets instead of repeated polling.
+
+Benefits:
+- Instant updates
+- Reduced repeated requests
+
+Tradeoff:
+- More complex implementation
+
+---
+
+### 4. Background Processing
+
+Use message queues for notification delivery.
+
+Benefits:
+- Better scalability
+- Reduced server blocking
+
+Tradeoff:
+- Additional infrastructure required
+
+---
+
+### 5. Database Indexing
+
+Use indexes on:
+- studentID
+- createdAt
+- notificationType
+
+Benefits:
+- Faster query execution
+
+Tradeoff:
+- Slightly slower writes
+
+---
+
+## Recommended Final Approach
+
+Best performance can be achieved using:
+- Pagination
+- Redis caching
+- WebSockets
+- Proper indexing
 
