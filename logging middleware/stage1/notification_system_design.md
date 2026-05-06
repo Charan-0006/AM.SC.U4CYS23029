@@ -403,3 +403,78 @@ Best performance can be achieved using:
 - WebSockets
 - Proper indexing
 
+
+# Stage 5
+
+## Problems in Current Implementation
+
+- Emails are sent sequentially
+- Slow processing for 50,000 students
+- Failure for some students stops reliability
+- No retry mechanism
+- Database save and email sending tightly coupled
+
+---
+
+## What Happens if Email Fails for 200 Students?
+
+Some students may:
+- Receive notification in app but not email
+- Receive inconsistent updates
+
+This creates reliability issues.
+
+---
+
+## Better Design
+
+Use:
+- Message Queue
+- Background Workers
+- Retry Mechanism
+- Async Processing
+
+
+
+---
+
+## Should DB Save and Email Sending Happen Together?
+
+No.
+
+Reason:
+- Database storage is critical
+- Email sending is external and may fail
+- Separating improves reliability
+
+Recommended flow:
+1. Save notification in DB
+2. Push email task to queue
+3. Worker sends email asynchronously
+
+---
+
+## Revised Pseudocode
+
+```python
+def notify_all(student_ids, message):
+
+    for student_id in student_ids:
+
+        save_notification_to_db(student_id, message)
+
+        push_email_job_to_queue(student_id, message)
+
+
+def email_worker():
+
+    while True:
+
+        job = get_next_job()
+
+        try:
+            send_email(job.student_id, job.message)
+
+        except:
+            retry_job(job)
+```
