@@ -202,3 +202,59 @@ db.notifications.deleteOne(
   { _id: ObjectId("123") }
 )
 ```
+
+
+
+
+# Stage 3
+
+## Query Analysis
+
+```sql
+SELECT * FROM notifications
+WHERE studentID = 1042 AND isRead = false
+ORDER BY createdAt ASC;
+```
+
+---
+
+## Is the Query Correct?
+
+Yes, the query is logically correct because:
+- It fetches unread notifications
+- Filters notifications for a specific student
+- Sorts by creation time
+
+---
+
+## Why is the Query Slow?
+
+Reasons:
+- Large number of notifications
+- Full table scan may occur
+- Sorting operation increases execution time
+- Missing indexes on filtering columns
+
+---
+
+## Suggested Improvements
+
+Instead of:
+```sql
+SELECT *
+```
+
+Fetch only required columns.
+
+Example:
+
+```sql
+SELECT id, title, message, createdAt
+FROM notifications
+WHERE studentID = 1042
+AND isRead = false
+ORDER BY createdAt DESC;
+```
+
+---
+
