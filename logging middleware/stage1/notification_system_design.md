@@ -478,3 +478,60 @@ def email_worker():
         except:
             retry_job(job)
 ```
+
+
+
+# Stage 6
+
+## Priority Inbox Design
+
+Priority is calculated using:
+- Notification Type Weight
+- Recency
+
+Priority Order:
+1. Placement
+2. Result
+3. Event
+
+Weights:
+- Placement = 3
+- Result = 2
+- Event = 1
+
+More recent notifications receive higher priority.
+
+---
+
+## Efficient Top 10 Maintenance
+
+Approach:
+- Use Priority Queue / Heap
+- Store only top 10 notifications
+- Replace low priority items when higher priority notifications arrive
+
+Benefits:
+- Faster processing
+- Lower memory usage
+- Efficient updates
+
+---
+
+## API Usage
+
+Notifications are fetched using the provided API.
+
+No hardcoded notifications are used.
+
+---
+
+## Files Included
+
+- stage6/priority_notifications.js
+- stage6/output.png
+
+---
+
+## Output
+
+The program fetches notifications, calculates priority scores, sorts them, and displays the top 10 notifications.
